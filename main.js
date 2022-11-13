@@ -37,10 +37,10 @@ Vue.prototype.url = {
 }
 
 Vue.prototype.tencent = {
-    map: {
-        referer: "华夏代驾",
-        key: "腾讯位置服务密钥"
-    }
+	map: {
+		referer: "华夏代驾",
+		key: "FGRBZ-GS266-44VSO-ER7OG-IW5S7-ANB47"
+	}
 }
 
 Vue.prototype.ajax = function(url, method, data, fun, load) {
