@@ -85,7 +85,7 @@ export default {
 			windowHeight: 0,
 			distance: 0,
 			duration: 0,
-			polyline: [],
+			polyline: [], // 方案路线坐标点串
 			markers: [],
 			infoStatus: true,
 			carId: null,

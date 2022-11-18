@@ -35,7 +35,7 @@ createApp(app).$mount();
 
 
 
-var baseUrl = "http://223.104.39.30:8080:8201/hxds-customer";
+var baseUrl = "http://qb27sg.natappfree.cc/hxds-customer";
 
 _vue.default.prototype.url = {
   registerNewCustomer: "".concat(baseUrl, "/customer/registerNewCustomer"),
@@ -48,7 +48,7 @@ _vue.default.prototype.url = {
 _vue.default.prototype.tencent = {
   map: {
     referer: "华夏代驾",
-    key: "腾讯位置服务密钥" } };
+    key: "FGRBZ-GS266-44VSO-ER7OG-IW5S7-ANB47" } };
 
 
 
@@ -465,10 +465,26 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
 {
   onLaunch: function onLaunch() {
+    //开启GPS后台刷新
+    wx.startLocationUpdate({
+      success: function success(resp) {
+        console.log('开启定位成功');
+      },
+      fail: function fail(resp) {
+        console.log('开启定位失败');
+      } });
 
+    //GPS定位变化就自动提交给后端
+    wx.onLocationChange(function (resp) {
+      var latitude = resp.latitude;
+      var longitude = resp.longitude;
+      var location = { latitude: latitude, longitude: longitude };
+      //触发自定义事件
+      uni.$emit('updateLocation', location);
+    });
   },
   onShow: function onShow() {
     console.log('App Show');
@@ -476,6 +492,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   onHide: function onHide() {
     console.log('App Hide');
   } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 /* 8 */

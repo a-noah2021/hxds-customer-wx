@@ -164,22 +164,92 @@ var QQMapWX = __webpack_require__(/*! ../../lib/qqmap-wx-jssdk.min.js */ 54);var
         longitude: 0,
         latitude: 0 },
 
-      longitude: 116.397505,
-      latitude: 39.908675,
+      longitude: 116.484264,
+      latitude: 39.992185,
       contentStyle: '',
       windowHeight: 0,
       map: null,
       flag: null };
 
   },
-  methods: {},
+  methods: {
+    returnLocationHandle: function returnLocationHandle() {
+      this.map.moveToLocation();
+    },
+    chooseLocationHandle: function chooseLocationHandle(flag) {
+      var that = this;
+      var key = that.tencent.map.key; //使用在腾讯位置服务申请的key
+      var referer = that.tencent.map.referer; //调用插件的app的名称
+      var latitude = that.latitude;
+      var longitude = that.longitude;
+      that.flag = flag;
+      var data = JSON.stringify({
+        latitude: latitude,
+        longitude: longitude });
 
+      uni.navigateTo({
+        url: "plugin://chooseLocation/index?key=".concat(key, "&referer=").concat(referer, "&location=").concat(data) });
+
+    } },
 
   onShow: function onShow() {
+    var that = this;
+    that.map = uni.createMapContext('map');
+    var qqmapsdk = new QQMapWX({
+      key: that.tencent.map.key });
 
+    //实时获取定位
+    uni.$on('updateLocation', function (location) {
+      //console.log(location);
+      //避免地图选点的内容被逆地址解析覆盖
+      if (that.flag != null) {
+        return;
+      }
+      var latitude = location.latitude;
+      var longitude = location.longitude;
+      that.latitude = latitude;
+      that.longitude = longitude;
+      that.from.latitude = latitude;
+      that.from.longitude = longitude;
+      //把坐标解析成地址
+      qqmapsdk.reverseGeocoder({
+        location: {
+          latitude: latitude,
+          longitude: longitude },
+
+        success: function success(resp) {
+          //console.log(resp);
+          that.from.address = resp.result.address;
+        },
+        fail: function fail(error) {
+          console.log(error);
+        } });
+
+    });
+    var location = chooseLocation.getLocation();
+    if (location != null) {
+      var place = location.name;
+      var latitude = location.latitude;
+      var longitude = location.longitude;
+      if (that.flag == 'from') {
+        that.from.address = place;
+        that.from.latitude = latitude;
+        that.from.longitude = longitude;
+      } else {
+        that.to.address = place;
+        that.to.latitude = latitude;
+        that.to.longitude = longitude;
+        uni.setStorageSync("from", that.from);
+        uni.setStorageSync("to", that.to);
+        uni.navigateTo({
+          url: "../create_order/create_order" });
+
+      }
+    }
   },
   onHide: function onHide() {
-
+    uni.$off('updateLocation');
+    chooseLocation.setLocation(null);
   },
   onLoad: function onLoad() {
     var that = this;
@@ -188,7 +258,7 @@ var QQMapWX = __webpack_require__(/*! ../../lib/qqmap-wx-jssdk.min.js */ 54);var
     that.contentStyle = "height:".concat(that.windowHeight, "px;");
   },
   onUnload: function onUnload() {
-
+    chooseLocation.setLocation(null);
   } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

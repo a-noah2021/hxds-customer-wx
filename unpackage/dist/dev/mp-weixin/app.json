@@ -72,7 +72,9 @@
     }
   },
   "requiredBackgroundModes": [
-    "location"
+    "location",
+    "startLocationUpdate",
+    "onLocationChange"
   ],
   "permission": {
     "scope.userLocation": {

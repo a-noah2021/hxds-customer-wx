@@ -3,5 +3,18 @@
     "projectname": "hxds-customer-wx",
     "setting": {
         "compileHotReLoad": true
+    },
+    "condition": {
+        "miniprogram": {
+            "list": [
+                {
+                    "name": "",
+                    "pathName": "pages/workbench/workbench",
+                    "query": "",
+                    "launchMode": "default",
+                    "scene": null
+                }
+            ]
+        }
     }
 }
