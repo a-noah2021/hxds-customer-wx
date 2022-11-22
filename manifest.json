@@ -52,7 +52,9 @@
     "mp-weixin" : {
         "appid" : "wx8a663873c20f264c",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+			"postcss" : false,
+			"minified" : false
         },
         "usingComponents" : true,
         "plugins" : {
@@ -80,12 +82,18 @@
         /**
 		 * 挂到后台依然可以使用GPS定位
 		 */
-        "requiredBackgroundModes" : [ "location","startLocationUpdate","onLocationChange" ],
+        "requiredBackgroundModes" : ["location","startLocationUpdate","onLocationChange" ],
         "permission" : {
             "scope.userLocation" : {
                 "desc" : "请允许地图服务使用GPS定位"
             }
-        }
+        },
+		"requiredPrivateInfos": [
+				"startLocationUpdate","onLocationChange" 
+		],
+		"optimization":{ 
+			"subPackages":true
+	    }
     },
     "mp-alipay" : {
         "usingComponents" : true

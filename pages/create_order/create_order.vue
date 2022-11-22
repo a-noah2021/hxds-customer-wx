@@ -89,7 +89,7 @@ export default {
 			markers: [],
 			infoStatus: true,
 			carId: null,
-			carPlate: null,
+			carPlate: null,	// 车牌
 			carType: null,
 			showCar: false,
 			showPopup: false,
@@ -115,8 +115,70 @@ export default {
 			}
 			return pl;
 		},
+		calculateLine: function(ref) {
+		    qqmapsdk.direction({
+		        mode: 'driving',
+		        from: {
+		            latitude: ref.from.latitude,
+		            longitude: ref.from.longitude
+		        },
+		        to: {
+		            latitude: ref.to.latitude,
+		            longitude: ref.to.longitude
+		        },
+		        success: function(resp) {
+		            if (resp.status != 0) {
+		                uni.showToast({
+		                    icon: 'error',
+		                    title: resp.message
+		                });
+		                return;
+		            }
+		            let route = resp.result.routes[0];
+		            let distance = route.distance;
+		            let duration = route.duration;
+		            let polyline = route.polyline;
+		            ref.distance = Math.ceil((distance / 1000) * 10) / 10;
+		            ref.duration = duration;
+		            let points = ref.formatPolyline(polyline);
 		
-		
+		            ref.polyline = [
+		                {
+		                    points: points,
+		                    width: 6,
+		                    color: '#05B473',
+		                    arrowLine: true
+		                }
+		            ];
+		            ref.markers = [
+		                {
+		                    id: 1,
+		                    latitude: ref.from.latitude,
+		                    longitude: ref.from.longitude,
+		                    width: 25,
+		                    height: 35,
+		                    anchor: {
+		                        x: 0.5,
+		                        y: 0.5
+		                    },
+		                    iconPath: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/start.png'
+		                },
+		                {
+		                    id: 2,
+		                    latitude: ref.to.latitude,
+		                    longitude: ref.to.longitude,
+		                    width: 25,
+		                    height: 35,
+		                    anchor: {
+		                        x: 0.5,
+		                        y: 0.5
+		                    },
+		                    iconPath: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/end.png'
+		                }
+		            ];
+		        }
+		    });
+		},
 	},
 	onLoad: function(options) {
 		let that = this;
@@ -125,10 +187,23 @@ export default {
 		that.windowHeight = windowHeight;
 		that.contentStyle = `height:${that.windowHeight}px;`;
 
+		that.from = uni.getStorageSync('from');
+		that.to = uni.getStorageSync('to');
 		
+		qqmapsdk = new QQMapWX({
+			key: that.tencent.map.key
+		});
+		that.map = uni.createMapContext('map');
+		
+		// if(options.hasOwnProperty('showCar')){
+		// 	that.showCar = options.showCar;
+		// 	that.carId = options.carId;
+		// 	that.carPlate = options.carPlate;
+		// }
 	},
 	onShow: function() {
-
+		let that = this;
+		that.calculateLine(that);
 	}
 };
 </script>

@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "",
-  "enablePullDownRefresh": false,
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "u-toast": "/uview-ui/components/u-toast/u-toast"
-  }
-}
