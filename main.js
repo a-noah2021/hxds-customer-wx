@@ -26,7 +26,7 @@ export function createApp() {
     }
 }
 // #endif
-let baseUrl = "http://qb27sg.natappfree.cc/hxds-customer"
+let baseUrl = "http://4q7d7y.natappfree.cc/hxds-customer"
 
 Vue.prototype.url = {
     registerNewCustomer: `${baseUrl}/customer/registerNewCustomer`,

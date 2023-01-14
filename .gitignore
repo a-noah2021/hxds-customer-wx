@@ -1,15 +1,13 @@
-### Vue template
-# gitignore template for Vue.js projects
-#
-# Recommended template: Node.gitignore
+### Example user template template
+### Example user template
 
-docs/_book
-
-test/
-
-unpackage/
-
+# IntelliJ project files
 .idea
+*.iml
+out
+gen
 
 .hbuilderx
-
+unpackage
+node_modules
+.DS_Store
