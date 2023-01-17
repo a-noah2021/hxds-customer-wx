@@ -24,7 +24,97 @@ export default {
 		};
 	},
 	methods: {
+		register: function() {
+			let that = this;
+			uni.showModal({
+				title: '提示信息',
+				editable: true,
+				placeholderText: '输入手机号',
+				success: function(resp) {
+					let tel = resp.content;
+					if (resp.confirm) {
+						let bool = that.checkValidTel(tel, '手机号码');
+						if (bool) {
+							uni.login({
+								provider: 'weixin',
+								success: function(resp) {
+									let code = resp.code;
+									that.code = code;
+								}
+							});
+							uni.getUserProfile({
+								desc: '获取用户信息',
+								success: function(resp) {
+									let nickname = resp.userInfo.nickName;
+									let avatarUrl = resp.userInfo.avatarUrl;
+									let sex = resp.userInfo.gender;
+									let sexJson = {
+										'0': '无',
+										'1': '男',
+										'2': '女'
+									};
+									sex = sexJson[sex+""];
 		
+									let data = {
+										code: that.code,
+										nickname: nickname,
+										photo: avatarUrl,
+										sex: sex,
+										tel: tel
+									};
+									that.ajax(that.url.registerNewCustomer, 'POST', data, function(resp) {
+										let token = resp.data.token;
+										uni.setStorageSync('token', token);
+										that.$refs.uToast.show({
+											title: '注册成功',
+											type: 'success',
+											callback: function() {
+												uni.switchTab({
+													url: '../workbench/workbench'
+												});
+											}
+										});
+									});
+								}
+							});
+						}
+					}
+				}
+			});
+		},
+		login: function() {
+			let that = this;
+			uni.login({
+				provider: 'weixin',
+				success: function(resp) {
+					let code = resp.code;
+					console.log(code);
+					let data = {
+						code: code
+					};
+					that.ajax(that.url.login, 'POST', data, function(resp) {
+						if (!resp.data.hasOwnProperty('token')) {
+							that.$refs.uToast.show({
+								title: '请先注册',
+								type: 'error'
+							});
+						} else {
+							let token = resp.data.token;
+							uni.setStorageSync('token', token);
+							that.$refs.uToast.show({
+								title: '登陆成功',
+								type: 'success',
+								callback: function() {
+									uni.switchTab({
+										url: '../workbench/workbench'
+									});
+								}
+							});
+						}
+					});
+				}
+			});
+		}
 	},
 	onLoad: function() {}
 };

@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/YanxinNet/uView#readme",
   "dependencies": {
-    "dayjs": "^1.10.7",
+    "dayjs": "^1.11.7",
     "vue-i18n": "^8.20.0"
   }
 }

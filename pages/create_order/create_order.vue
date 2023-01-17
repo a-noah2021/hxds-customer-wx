@@ -179,6 +179,11 @@ export default {
 		        }
 		    });
 		},
+		chooseCarHandle: function(){
+			uni.navigateTo({
+				url: '../car_list/car_list'
+			})
+		}
 	},
 	onLoad: function(options) {
 		let that = this;
@@ -195,11 +200,11 @@ export default {
 		});
 		that.map = uni.createMapContext('map');
 		
-		// if(options.hasOwnProperty('showCar')){
-		// 	that.showCar = options.showCar;
-		// 	that.carId = options.carId;
-		// 	that.carPlate = options.carPlate;
-		// }
+		if(options.hasOwnProperty('showCar')){
+			that.showCar = options.showCar;
+			that.carId = options.carId;
+			that.carPlate = options.carPlate;
+		}
 	},
 	onShow: function() {
 		let that = this;
