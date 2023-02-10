@@ -26,7 +26,7 @@ export function createApp() {
     }
 }
 // #endif
-let baseUrl = "http://m3w7pk.natappfree.cc/hxds-customer"
+let baseUrl = "http://q6f6k4.natappfree.cc/hxds-customer"
 
 Vue.prototype.url = {
     registerNewCustomer: `${baseUrl}/customer/registerNewCustomer`,
@@ -34,6 +34,7 @@ Vue.prototype.url = {
     insertCustomerCar: `${baseUrl}/customer/car/insertCustomerCar`,
     searchCustomerCarList: `${baseUrl}/customer/car/searchCustomerCarList`,
     deleteCustomerCarById: `${baseUrl}/customer/car/deleteCustomerCarById`,
+	createNewOrder: `${baseUrl}/order/createNewOrder`,
 }
 
 Vue.prototype.tencent = {

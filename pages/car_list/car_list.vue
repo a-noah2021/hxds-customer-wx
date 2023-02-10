@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <view v-if="list.length > 0" v-for="one in list" class="row" @tap="choseOneHandle(one.id, one.carPlate)"
+    <view v-if="list.length > 0" v-for="one in list" class="row" @tap="choseOneHandle(one.id, one.carPlate, one.carType)"
           @longpress="removeHandle(one.id)">
       <view>
         <u-icon name="info-circle-fill" color="#2979ff" size="35" class="icon"></u-icon>
@@ -66,9 +66,9 @@ export default {
         }
       });
     },
-    choseOneHandle: function (id, carPlate) {
+    choseOneHandle: function (id, carPlate, carType) {
       uni.navigateTo({
-        url: `../create_order/create_order?showCar=true&carId=${id}&carPlate=${carPlate}`
+        url: `../create_order/create_order?showCar=true&carId=${id}&carPlate=${carPlate}&carType=${carType}`
       });
     }
   },

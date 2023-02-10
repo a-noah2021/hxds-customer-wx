@@ -183,6 +183,68 @@ export default {
 			uni.navigateTo({
 				url: '../car_list/car_list'
 			})
+		},
+    createOrderHandle: function() {
+        let that = this;
+        if (that.carType == null || that.carPlate == null) {
+            uni.showToast({
+                icon: 'error',
+                title: '没有设置代驾车辆'
+            });
+            return;
+        }
+        uni.showLoading({
+            title: '下单中请稍后'
+        });
+        setTimeout(function() {
+            uni.hideLoading();
+        }, 60000);
+        let data = {
+            startPlace: that.from.address,
+            startPlaceLatitude: that.from.latitude,
+            startPlaceLongitude: that.from.longitude,
+            endPlace: that.to.address,
+            endPlaceLatitude: that.to.latitude,
+            endPlaceLongitude: that.to.longitude,
+            favourFee: '0.0',
+            carPlate: that.carPlate,
+            carType: that.carType
+        };
+        that.ajax(that.url.createNewOrder, 'POST', data, function(resp) {
+            uni.hideLoading();
+            if (resp.data.result.count > 0) {
+                uni.showToast({
+                    icon: 'success',
+                    title: '订单创建成功'
+                });
+                setTimeout(function() {
+                    that.orderId = resp.data.result.orderId;
+                    that.showPopup = true;
+                    //此处应该是15*60，但是测试中我们等不了15分钟,每隔5分钟发送一次查询接单情况的请求
+                    /*that.timestamp = 60;
+                    that.$refs.uCountDown.start();*/
+                }, 2000);
+            } else {
+                uni.showToast({
+                    icon: 'none',
+                    title: '没有适合接单的司机'
+                });
+            }
+        });
+    },
+		countChangeHandle: function(s) {
+			let that = this;
+			if (s != 0 && s % 5 == 0) {
+				// that.searchOrderStatus(that);
+			}
+		},
+		countEndHandle: function() {
+			let that = this;
+			// that.deleteUnAcceptOrder(that);
+		},
+		cancelHandle: function() {
+			let that = this;
+			// that.deleteUnAcceptOrder(that);
 		}
 	},
 	onLoad: function(options) {
@@ -204,6 +266,7 @@ export default {
 			that.showCar = options.showCar;
 			that.carId = options.carId;
 			that.carPlate = options.carPlate;
+			this.carType = options.carType;
 		}
 	},
 	onShow: function() {
