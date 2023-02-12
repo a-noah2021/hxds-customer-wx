@@ -41,7 +41,6 @@
 			</view>
 			<button class="btn" @tap="createOrderHandle">确定下单</button>
 		</view>
-		<u-popup v-model="infoStatus" mode="center" width="600" height="350"><view>出淤泥而不染，濯清涟而不妖</view></u-popup>
 		<u-popup v-model="showPopup" mode="center" width="600" height="350" :mask-close-able="false">
 			<view class="popup-title">您的订单正在等待司机接单</view>
 			<view class="count-down">
@@ -327,13 +326,6 @@ export default {
 			that.carId = options.carId;
 			that.carPlate = options.carPlate;
 			that.carType = options.carType;
-		}
-		
-		if(options.hasOwnProperty("showPopup")){
-			that.timestamp=60
-			that.showPopup=true
-			that.orderId=options.orderId
-			that.$refs.uCountDown.start();
 		}
 	},
 	onShow: function() {
