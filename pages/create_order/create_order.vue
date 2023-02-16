@@ -327,6 +327,12 @@ export default {
 			that.carPlate = options.carPlate;
 			that.carType = options.carType;
 		}
+		if(options.hasOwnProperty("showPopup")){
+			that.timestamp=60
+			that.showPopup=true
+			that.orderId=options.orderId
+			that.$refs.uCountDown.start();
+		}
 	},
 	onShow: function() {
 		let that = this;

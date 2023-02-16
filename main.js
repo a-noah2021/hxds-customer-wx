@@ -37,6 +37,7 @@ Vue.prototype.url = {
 	createNewOrder: `${baseUrl}/order/createNewOrder`,
 	searchOrderStatus: `${baseUrl}/order/searchOrderStatus`,
 	deleteUnAcceptOrder: `${baseUrl}/order/deleteUnAcceptOrder`,
+	hasCustomerCurrentOrder: `${baseUrl}/order/hasCustomerCurrentOrder`,
 }
 
 Vue.prototype.tencent = {

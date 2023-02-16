@@ -120,10 +120,61 @@ export default {
       chooseLocation.setLocation(null);
    },
    onLoad: function() {
-      let that = this;
-      let windowHeight = uni.getSystemInfoSync().windowHeight;
-      that.windowHeight = windowHeight;
-      that.contentStyle = `height:${that.windowHeight}px;`;
+		let that = this;
+		let windowHeight = uni.getSystemInfoSync().windowHeight;
+		that.windowHeight = windowHeight;
+		that.contentStyle = `height:${that.windowHeight}px;`;
+		//查询乘客当前订单
+		that.ajax(that.url.hasCustomerCurrentOrder,"POST",{},function(resp){
+			let result=resp.data.result
+			let hasCustomerUnAcceptOrder = result.hasCustomerUnAcceptOrder;
+			let hasCustomerUnFinishedOrder = result.hasCustomerUnFinishedOrder;
+			if(hasCustomerUnAcceptOrder){
+				let json=result.unAcceptOrder
+				let carType = json.carType;
+				let carPlate = json.carPlate;
+				let startPlaceLocation = JSON.parse(json.startPlaceLocation);
+				let endPlaceLocation = JSON.parse(json.endPlaceLocation);
+				let from = {
+					address: json.startPlace,
+					latitude: startPlaceLocation.latitude,
+					longitude: startPlaceLocation.longitude
+				};
+				let to = {
+					address: json.endPlace,
+					latitude: endPlaceLocation.latitude,
+					longitude: endPlaceLocation.longitude
+				};
+				uni.setStorageSync("from",from)
+				uni.setStorageSync("to",to)
+				uni.showModal({
+					title: '提示消息',
+					content: '您有一个订单等待司机接单，现在将跳转到等待接单页面',
+					showCancel: false,
+					success: function(resp) {
+						if (resp.confirm) {
+							uni.navigateTo({
+								url: `../create_order/create_order?showPopup=true&orderId=${json.id}&showCar=true&carType=${carType}&carPlate=${carPlate}`
+							});
+						}
+					}
+				});
+			}
+			else if(hasCustomerUnFinishedOrder){
+				uni.showModal({
+					title: '提示消息',
+					content: '您有一个正在执行的定订单，现在将跳转到司乘同显画面',
+					showCancel: false,
+					success: function(resp) {
+						if (resp.confirm) {
+							uni.navigateTo({
+								url: '../move/move?orderId=' + result.unFinishedOrder
+							});
+						}
+					}
+				});
+			}
+		},false)
    },
    onUnload: function() {
       chooseLocation.setLocation(null);
