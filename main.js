@@ -26,7 +26,7 @@ export function createApp() {
 	}
 }
 // #endif
-let baseUrl = "http://6gqxf2.natappfree.cc/hxds-customer"
+let baseUrl = "http://csitak.natappfree.cc/hxds-customer"
 
 Vue.prototype.url = {
 	registerNewCustomer: `${baseUrl}/customer/registerNewCustomer`,
@@ -38,6 +38,9 @@ Vue.prototype.url = {
 	searchOrderStatus: `${baseUrl}/order/searchOrderStatus`,
 	deleteUnAcceptOrder: `${baseUrl}/order/deleteUnAcceptOrder`,
 	hasCustomerCurrentOrder: `${baseUrl}/order/hasCustomerCurrentOrder`,
+	searchOrderForMoveById: `${baseUrl}/order/searchOrderForMoveById`,
+	searchOrderLocationCache: `${baseUrl}/order/location/searchOrderLocationCache`,
+	confirmArriveStartPlace: `${baseUrl}/order/confirmArriveStartPlace`,
 }
 
 Vue.prototype.tencent = {
