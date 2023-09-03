@@ -41,6 +41,10 @@ Vue.prototype.url = {
 	searchOrderForMoveById: `${baseUrl}/order/searchOrderForMoveById`,
 	searchOrderLocationCache: `${baseUrl}/order/location/searchOrderLocationCache`,
 	confirmArriveStartPlace: `${baseUrl}/order/confirmArriveStartPlace`,
+	receiveBillMessage: `${baseUrl}/order/receiveBillMessage`,
+	searchOrderById: `${baseUrl}/order/searchOrderById`,
+	createWxPayment: `${baseUrl}/order/createWxPayment`,
+	updateOrderAboutPayment: `${baseUrl}/order/updateOrderAboutPayment`,
 }
 
 Vue.prototype.tencent = {

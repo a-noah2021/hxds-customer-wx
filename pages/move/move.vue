@@ -55,7 +55,8 @@ export default {
 			polyline: [],
 			markers: [],
 			timer: null,
-			infoStatus: true
+			infoStatus: true,
+			messageTimer: null
 		};
 	},
 	methods: {
@@ -248,6 +249,8 @@ export default {
 		uni.$off('updateLocation');
 		clearInterval(that.timer);
 		that.timer = null;
+		clearInterval(that.messageTimer)
+		that.messageTimer = null
 	}
 };
 </script>

@@ -108,9 +108,7 @@
 			</view>
 		</view>
 
-		<view class="operate-container" v-show="status == 6">
-			<button class="btn" @tap="payHandle">立即付款</button>
-		</view>
+		<view class="operate-container" v-show="status == 6"><button class="btn" @tap="payHandle">立即付款</button></view>
 		<view v-if="status >= 7">
 			<view class="setion-title">
 				<image src="../../static/order/rate.png" mode="widthFix"></image>
@@ -119,14 +117,8 @@
 			<view class="section-content">
 				<view class="remark-container">
 					<view class="remark-rate">
-						<view class="photo">
-							<u-avatar :src="photo" size="60" />
-						</view>
-						<view class="rate">
-							<u-rate :count="customerComment.count" 
-									v-model="customerComment.value" disabled="true" 
-									active-color="#FFBB2A" size="40" />
-						</view>
+						<view class="photo"><u-avatar :src="photo" size="60" /></view>
+						<view class="rate"><u-rate :count="customerComment.count" v-model="customerComment.value" disabled="true" active-color="#FFBB2A" size="40" /></view>
 					</view>
 					<view class="remark">{{ customerComment.remark }}</view>
 				</view>
@@ -144,20 +136,12 @@
 			</view>
 		</view>
 		<u-top-tips ref="uTips"></u-top-tips>
-		<u-popup v-model="comment.showComment" mode="center" 
-				border-radius="14" width="550rpx" height="580rpx">
+		<u-popup v-model="comment.showComment" mode="center" border-radius="14" width="550rpx" height="580rpx">
 			<view class="comment-title">华夏代驾服务您满意吗</view>
 			<view class="comment-desc">请给司机的服务一点评价吧~</view>
-			<view class="comment-rate">
-				<u-rate :count="comment.count" v-model="comment.value" 
-						active-color="#FFBB2A" size="40">
-				</u-rate>
-			</view>
-			<u-input v-model="comment.remark" type="textarea" :border="false"
-					:clearable="false" placeholder="说说哪里好,其他顾客想知道~" 
-					:custom-style="comment.remarkStyle" />
-			<u-button type="success" :custom-style="comment.btnStyle" 
-						@click="insertComment">确定</u-button>
+			<view class="comment-rate"><u-rate :count="comment.count" v-model="comment.value" active-color="#FFBB2A" size="40"></u-rate></view>
+			<u-input v-model="comment.remark" type="textarea" :border="false" :clearable="false" placeholder="说说哪里好,其他顾客想知道~" :custom-style="comment.remarkStyle" />
+			<u-button type="success" :custom-style="comment.btnStyle" @click="insertComment">确定</u-button>
 		</u-popup>
 	</view>
 </template>
@@ -222,10 +206,126 @@ export default {
 		};
 	},
 	methods: {
-		
+		payHandle: function() {
+			let that = this;
+			uni.showModal({
+				title: '提示消息',
+				content: '您确定支付该订单？',
+				success: function(resp) {
+					if (resp.confirm) {
+						let data = {
+							orderId: that.orderId,
+							customerVoucherId: that.voucher.id,
+							voucherId: that.voucher.voucherId
+						};
+						that.ajax(that.url.createWxPayment, 'POST', data, function(resp) {
+							let result = resp.data.result;
+							let pk = result.package;
+							let timeStamp = result.timeStamp;
+							let nonceStr = result.nonceStr;
+							let paySign = result.paySign;
+							let uuid = result.uuid;
+							uni.requestPayment({
+								timeStamp: timeStamp,
+								nonceStr: nonceStr,
+								package: pk,
+								paySign: paySign,
+								signType: 'MD5',
+								success: function() {
+									console.log('付款成功');
+									// 主动发起查询请求
+									that.ajax(that.url.updateOrderAboutPayment, 'POST', data, function(resp) {
+										let result = resp.data.result;
+										if (result == '付款成功') {
+											uni.showToast({
+												icon: 'success',
+												title: '付款成功'
+											});
+											setTimeout(function() {
+												uni.switchTab({
+													url: '../workbench/workbench'
+												});
+											}, 2000);
+										} else {
+											uni.showToast({
+												icon: 'success',
+												title: '付款异常，如有疑问可以拨打客服电话'
+											});
+										}
+									});
+								},
+								fail: function(error) {
+									console.error(error);
+									uni.showToast({
+										icon: 'error',
+										title: '付款失败'
+									});
+								}
+							});
+						});
+					}
+				}
+			});
+		},
 	},
 	onLoad: function(options) {
-		
+		let that = this;
+		let orderId = options.orderId;
+		that.orderId = orderId;
+		let data = {
+			orderId: orderId
+		};
+		that.ajax(that.url.searchOrderById, 'POST', data, function(resp) {
+			let result = resp.data.result;
+			that.driverId = result.driverId;
+			that.name = result.name;
+			that.photo = result.photo;
+			that.title = result.title;
+			that.tel = result.tel;
+			that.startPlace = result.startPlace;
+			that.endPlace = result.endPlace;
+			that.createTime = result.createTime;
+			that.favourFee = result.favourFee;
+			that.incentiveFee = result.incentiveFee;
+			that.carPlate = result.carPlate;
+			that.carType = result.carType;
+			let status = result.status;
+			that.status = status;
+			if ([5, 6, 7, 8].includes(status)) {
+				that.realMileage = result.realMileage;
+				that.mileageFee = result.mileageFee;
+				that.waitingFee = result.waitingFee;
+				that.waitingMinute = result.waitingMinute;
+				that.returnFee = result.returnFee;
+				that.returnMileage = result.returnMileage;
+				that.parkingFee = result.parkingFee;
+				that.tollFee = result.tollFee;
+				that.otherFee = result.otherFee;
+				that.total = result.total;
+				that.voucherFee = result.voucherFee;
+			}
+			that.baseMileagePrice = result.baseMileagePrice;
+			that.baseMileage = result.baseMileage;
+			that.exceedMileagePrice = result.exceedMileagePrice;
+			that.base_minute = result.baseMinute;
+			that.exceedMinutePrice = result.exceedMinutePrice;
+			that.baseReturnMileage = result.baseReturnMileage;
+			that.exceedReturnPrice = result.exceedReturnPrice;
+			that.realPay = '--';
+			if ([2, 3].includes(status)) {
+				that.img = '../../static/order/icon-1.png';
+			} else if ([4].includes(status)) {
+				that.img = '../../static/order/icon-2.png';
+			} else if ([5, 6].includes(status)) {
+				that.img = '../../static/order/icon-3.png';
+			} else if ([7].includes(status)) {
+				that.img = '../../static/order/icon-4.png';
+				that.realPay = result.realPay;
+			} else if ([8, 9, 10, 11, 12].includes(status)) {
+				that.img = '../../static/order/icon-5.png';
+				that.realPay = result.realPay;
+			}
+		});
 	}
 };
 </script>
