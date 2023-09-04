@@ -45,6 +45,8 @@ Vue.prototype.url = {
 	searchOrderById: `${baseUrl}/order/searchOrderById`,
 	createWxPayment: `${baseUrl}/order/createWxPayment`,
 	updateOrderAboutPayment: `${baseUrl}/order/updateOrderAboutPayment`,
+	insertComment: `${baseUrl}/order/insertComment`,
+	searchCustomerOrderByPage: `${baseUrl}/order/searchCustomerOrderByPage`,
 }
 
 Vue.prototype.tencent = {

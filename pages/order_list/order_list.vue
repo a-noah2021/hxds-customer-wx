@@ -42,15 +42,91 @@ export default {
 		};
 	},
 	methods: {
-		
+    loadPageData: function(ref) {
+      let data = {
+        page: ref.page,
+        length: ref.length
+      };
+      let status = {
+        '1': '等待接单',
+        '2': '已接单',
+        '3': '司机已到达',
+        '4': '开始代驾',
+        '5': '结束代驾',
+        '6': '未付款',
+        '7': '已付款',
+        '8': '订单已结束',
+        '9': '顾客撤单',
+        '10': '司机撤单',
+        '11': '事故关闭',
+        '12': '其他'
+      };
+      ref.ajax(ref.url.searchCustomerOrderByPage, 'POST', data, function(resp) {
+        let result = resp.data.result;
+        let temp = null;
+        let orderList = [];
+        let monthList = [];
+        if (!result.hasOwnProperty('list') || result.list.length == 0) {
+          ref.isLastPage = true;
+          return;
+        }
+        for (let one of result.list) {
+          if (temp != null && temp != one.month) {
+            monthList.push({ month: temp, orders: orderList });
+            orderList = [];
+          }
+          if (one.status == 6) {
+            one.style = 'status red';
+          } else if (one.status == 7) {
+            one.style = 'status green';
+          } else if ([9, 10].includes(one.status)) {
+            one.style = 'status orange';
+          } else {
+            one.style = 'status';
+          }
+          one.status = status[one.status + ''];
+          one.acceptTime = dayjs(one.acceptTime, 'YYYY-MM-DD HH-mm-ss').format('MM/DD HH:mm');
+          orderList.push(one);
+          temp = one.month;
+        }
+        monthList.push({ month: temp, orders: orderList });
+        if (ref.monthList.length == 0) {
+          ref.monthList = monthList;
+        } else {
+          for (let one of monthList) {
+            let flag = false;
+            for (let temp of ref.monthList) {
+              if (one.month == temp.month) {
+                temp.orders = temp.orders.concat(one.orders);
+                flag = true;
+                break;
+              }
+            }
+            if (!flag) {
+              ref.monthList.push(one);
+            }
+          }
+        }
+      });
+    },
+    viewOrderHandle: function(orderId) {
+      uni.navigateTo({
+        url: '../order/order?orderId=' + orderId
+      });
+    }
 	},
 	onLoad: function() {
-		
+    let that = this;
+    that.loadPageData(that);
 	},
 	onReachBottom: function() {
-		
+    let that = this;
+    if (that.isLastPage) {
+      return;
+    }
+    that.page = that.page + 1;
+    that.loadPageData(that);
 	},
-
 	onShow: function() {},
 	onHide: function() {}
 };

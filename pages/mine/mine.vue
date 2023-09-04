@@ -11,7 +11,7 @@
 			</view>
 		</view>
 		<u-cell-group>
-			<u-cell-item icon="file-text-fill" title="订单"></u-cell-item>
+			<u-cell-item icon="file-text-fill" title="订单" @click="this.toPage('../order_list/order_list')"></u-cell-item>
 			<u-cell-item icon="info-circle-fill" title="罚款" :value="fine"></u-cell-item>
 			<u-cell-item icon="coupon-fill" title="代金券" :value="voucher" @click="this.toPage('../voucher_list/voucher_list')"></u-cell-item>
 			<u-cell-item icon="server-fill" title="在线客服"></u-cell-item>
